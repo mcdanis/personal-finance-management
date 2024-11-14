@@ -1,12 +1,20 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import React from "react";
-import Layout from "../../components/Layout";
-import Tabs from "../../components/Transaction/Tabs";
-import { H1, H2 } from "../../templates/LandingPage/components/headings";
+import Layout from "../../../components/Layout";
+import Tabs from "../../../components/Transaction/Tabs";
+import { H1, H2 } from "../../../templates/LandingPage/components/headings";
 
-const KreditPage = () => {
+const EditData = () => {
+  const router = useRouter();
+
+  const { id_expenditure } = router.query;
+
+  const [data, setData] = useState<any>(null);
+
   return (
     <>
-      <Layout title="Pemasukan">
+      <Layout title="Pengeluaran">
         <div className="relative isolate px-6 pt-14 lg:px-8">
           <div
             className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -20,13 +28,13 @@ const KreditPage = () => {
             ></div> */}
           </div>
           <div className="text-center">
-            <H2>Pemasukan</H2>
+            <H2>Edit Pengeluaran</H2>
           </div>
-          <Tabs tab1="Data Pemasukan" tab2="Input Pemasukan" />
+          <Tabs tab1="Edit Pengeluaran" isEdit="expenditure" />
         </div>
       </Layout>
     </>
   );
 };
 
-export default KreditPage;
+export default EditData;
