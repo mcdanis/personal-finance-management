@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { useState } from "react";
+import ReportDropdownMenu from "./ReportDropdownMenu";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const [isDropdownOpenReport, setIsDropdownOpenReport] = useState(false);
+
+  const toggleDropdownReport = () => {
+    setIsDropdownOpenReport(!isDropdownOpenReport);
   };
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -88,9 +95,7 @@ const Header = () => {
               </div>
             )}
           </div>
-          <a href="#" className="text-sm/6 font-bold text-gray-900">
-            Laporan
-          </a>
+          <ReportDropdownMenu />
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </nav>
