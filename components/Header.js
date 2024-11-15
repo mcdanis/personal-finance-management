@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
-import ReportDropdownMenu from "./ReportDropdownMenu";
+import ReportDropdownMenu from "./SmallPart/ReportDropdownMenu";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
