@@ -1,5 +1,7 @@
 import { useState } from "react";
-export const IncomeTabContentInput = () => {
+import { H3 } from "../../templates/LandingPage/components/headings";
+
+export const IncomeTabContentData = () => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -101,7 +103,7 @@ export const IncomeTabContentInput = () => {
     </div>
   );
 };
-export const IncomeTabContentData = () => {
+export const IncomeTabContentInput = () => {
   const [formData, setFormData] = useState({
     pengeluaran: "",
     tanggal: "",
@@ -129,6 +131,7 @@ export const IncomeTabContentData = () => {
       onSubmit={handleSubmit}
       className="mx-auto p-6 bg-white rounded-lg shadow-md space-y-6"
     >
+      <H3>Input Pemasukan</H3>
       <div>
         <label
           htmlFor="pengeluaran"

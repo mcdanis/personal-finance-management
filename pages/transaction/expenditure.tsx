@@ -22,7 +22,7 @@ const DebitPage = () => {
           <div className="text-center">
             <H2>Pengeluaran</H2>
           </div>
-          <Tabs tab1="Data Pengeluaran" tab2="Input Pengeluaran" />
+          <Tabs tab1="Input Pengeluaran" tab2="Data Pengeluaran" />
         </div>
       </Layout>
     </>

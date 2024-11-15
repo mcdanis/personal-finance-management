@@ -22,7 +22,7 @@ const KreditPage = () => {
           <div className="text-center">
             <H2>Pemasukan</H2>
           </div>
-          <Tabs tab1="Data Pemasukan" tab2="Input Pemasukan" />
+          <Tabs tab1="Input Pemasukan" tab2="Data Pemasukan" type="income" />
         </div>
       </Layout>
     </>

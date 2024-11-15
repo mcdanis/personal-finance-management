@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { useState } from "react";
+import ReportDropdownMenu from "./ReportDropdownMenu";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const [isDropdownOpenReport, setIsDropdownOpenReport] = useState(false);
+
+  const toggleDropdownReport = () => {
+    setIsDropdownOpenReport(!isDropdownOpenReport);
   };
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,7 +74,7 @@ const Header = () => {
               onClick={toggleDropdown}
               className="text-sm/6 font-bold text-gray-900 "
             >
-              Transaksi &nbsp; ▽
+              Transaksi
             </button>
             {isDropdownOpen && (
               <div className="absolute left-0 mt-2 z-10 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
@@ -88,9 +95,7 @@ const Header = () => {
               </div>
             )}
           </div>
-          <a href="#" className="text-sm/6 font-bold text-gray-900">
-            Laporan
-          </a>
+          <ReportDropdownMenu />
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </nav>
