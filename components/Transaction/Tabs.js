@@ -1,8 +1,6 @@
 import { useState } from "react"
-import {
-  ExpenditureTabContentData,
-  ExpenditureTabContentInput,
-} from "./ExpenditureTabContent.tsx"
+import { ExpenditureTabContentData, ExpenditureTabContentInput } from "./ExpenditureTabContent.tsx"
+import { IncomeTabContentInput, IncomeTabContentData } from "./IncomeTabContent.tsx"
 import { ExpenditureEdit, IncomeEdit } from "./EditPage"
 import { DailyExpenditureReport, DailyIncomeReport } from "../Report/DailyReportTabContent"
 import { MonthlyExpenditureReport, MonthlyIncomeReport } from "../Report/MonthlyReportTabContent"
@@ -31,6 +29,14 @@ const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
       return <CustomExpenditureReport />;
     }
 
+    if (type === "home") {
+      return <ExpenditureTabContentInput />
+    }
+
+    if (type === "income") {
+      return <IncomeTabContentInput />
+    }
+
     return <ExpenditureTabContentInput />;
   };
 
@@ -45,6 +51,14 @@ const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
 
     if (type === "customReport") {
       return <CustomIncomeReport />;
+    }
+
+    if (type === "home") {
+      return <IncomeTabContentInput />
+    }
+
+    if (type === "income") {
+      return <IncomeTabContentData />
     }
 
     return <ExpenditureTabContentData />;

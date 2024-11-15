@@ -6,7 +6,7 @@ import { H4, H2 } from "../../templates/LandingPage/components/headings";
 const DebitPage = () => {
   return (
     <>
-      <Layout title="Laporan">
+      <Layout title="Laporan Harian">
         <div className="relative isolate px-6 pt-14 lg:px-8">
           <div className="text-center">
             <H2>Laporan harian</H2>

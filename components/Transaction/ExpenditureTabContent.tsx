@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { H3 } from "../../templates/LandingPage/components/headings";
 
 import { useState } from "react";
-export const ExpenditureTabContentInput = () => {
+export const ExpenditureTabContentData = () => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -105,7 +106,7 @@ export const ExpenditureTabContentInput = () => {
     </div>
   );
 };
-export const ExpenditureTabContentData = () => {
+export const ExpenditureTabContentInput = () => {
   const [formData, setFormData] = useState({
     pengeluaran: "",
     tanggal: "",
@@ -133,6 +134,7 @@ export const ExpenditureTabContentData = () => {
       onSubmit={handleSubmit}
       className="mx-auto p-6 bg-white rounded-lg shadow-md space-y-6"
     >
+      <H3>Input Pengeluaran</H3>
       <div>
         <label
           htmlFor="pengeluaran"

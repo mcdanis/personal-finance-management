@@ -90,9 +90,7 @@ const FlyoutMenu: React.FC<FlyoutMenuProps> = () => {
                     </svg>
                   </div>
                   <div>
-                    <a href="#" className="font-semibold text-gray-900">
-                      Bulanan
-                    </a>
+                    Bulanan
                     <p className="mt-1 text-gray-600">
                       Filter tanggal by Bulan dan lihat laporannya
                     </p>
@@ -118,9 +116,7 @@ const FlyoutMenu: React.FC<FlyoutMenuProps> = () => {
                     </svg>
                   </div>
                   <div>
-                    <a href="#" className="font-semibold text-gray-900">
-                      Custom
-                    </a>
+                    Custom
                     <p className="mt-1 text-gray-600">
                       Piih rentang tanggal yang diinginkan maka data akan muncul
                     </p>
