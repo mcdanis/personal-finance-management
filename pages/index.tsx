@@ -101,9 +101,117 @@ const HomePage = () => {
             }}
           ></div>
         </div>
-        <div className="mx-auto max-w-2xl py-32 ">
-          <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
+        <div className="mx-auto max-w-7xl py-32 flex gap-4">
+          <div className="flex-1 max-w-2xl p-6">
+            <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
+          </div>
+
+          <div className="flex-1 max-w-2xl bg-white-100 p-6">
+            <div className="relative text-center px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+              <span className="text-yellow-600 font-bold text-base">
+                <h2 className="text-xl font-semibold">Data Pengeluaran</h2>
+              </span>
+            </div>
+            <table className="min-w-full divide-y divide-gray-200 mb-10">
+              <thead className="bg-yellow-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    No
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Pemasukan
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nominal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tanggal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap">1</td>
+                  <td className="px-6 py-4 whitespace-nowrap">Alice</td>
+                  <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
+                  <td className="px-6 py-4 whitespace-nowrap">Admin</td>
+                  <td className="">
+                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                      Edit
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 4l4 4-8 8H8v-4l8-8z"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="relative text-center px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+              <span className="text-green-600 font-bold text-base">
+                <h2 className="text-xl font-semibold">Data Pemasukan</h2>
+              </span>
+            </div>
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-green-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    No
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Pemasukan
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nominal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tanggal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap">1</td>
+                  <td className="px-6 py-4 whitespace-nowrap">Alice</td>
+                  <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
+                  <td className="px-6 py-4 whitespace-nowrap">Admin</td>
+                  <td className="">
+                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                      Edit
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 4l4 4-8 8H8v-4l8-8z"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
         <div
           className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl "
           aria-hidden="true"
