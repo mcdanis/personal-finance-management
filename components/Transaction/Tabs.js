@@ -1,31 +1,63 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   ExpenditureTabContentData,
   ExpenditureTabContentInput,
-} from "./ExpenditureTabContent.tsx";
-import { ExpenditureEdit, IncomeEdit } from "./EditPage";
+} from "./ExpenditureTabContent.tsx"
+import { ExpenditureEdit, IncomeEdit } from "./EditPage"
+import { DailyExpenditureReport, DailyIncomeReport } from "../Report/DailyReportTabContent"
+import { MonthlyExpenditureReport, MonthlyIncomeReport } from "../Report/MonthlyReportTabContent"
+import { CustomExpenditureReport, CustomIncomeReport } from "../Report/CustomReportTabContent"
 
-const Tabs = ({ tab1, tab2, isEdit }) => {
+const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const getEditTabContent = () => {
+  const getTabContent = () => {
     if (isEdit === "expenditure") {
       return <ExpenditureEdit />;
     }
     if (isEdit === "income") {
       return <IncomeEdit />;
     }
+
+    if (type === "dailyReport") {
+      return <DailyExpenditureReport />;
+    }
+
+    if (type === "monthlyReport") {
+      return <MonthlyExpenditureReport />;
+    }
+
+    if (type === "customReport") {
+      return <CustomExpenditureReport />;
+    }
+
     return <ExpenditureTabContentInput />;
   };
+
+  const getTabContent2 = () => {
+    if (type === "dailyReport") {
+      return <DailyIncomeReport />;
+    }
+
+    if (type === "monthlyReport") {
+      return <MonthlyIncomeReport />;
+    }
+
+    if (type === "customReport") {
+      return <CustomIncomeReport />;
+    }
+
+    return <ExpenditureTabContentData />;
+  }
 
   const tabs = [
     tab1 && {
       name: tab1,
-      content: getEditTabContent(),
+      content: getTabContent(),
     },
     tab2 && {
       name: tab2,
-      content: <ExpenditureTabContentData />,
+      content: getTabContent2(),
     },
   ].filter(Boolean);
 
@@ -36,11 +68,10 @@ const Tabs = ({ tab1, tab2, isEdit }) => {
           {tabs.map((tab, index) => (
             <button
               key={index}
-              className={`py-2 px-4 text-sm font-medium text-gray-700 hover:text-blue-500 focus:outline-none transition-all duration-300 ${
-                activeTab === index
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "border-transparent"
-              }`}
+              className={`py-2 px-4 text-sm font-medium text-gray-700 hover:text-blue-500 focus:outline-none transition-all duration-300 ${activeTab === index
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "border-transparent"
+                }`}
               onClick={() => setActiveTab(index)}
             >
               {tab.name}

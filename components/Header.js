@@ -74,7 +74,7 @@ const Header = () => {
               onClick={toggleDropdown}
               className="text-sm/6 font-bold text-gray-900 "
             >
-              Transaksi &nbsp; ▽
+              Transaksi
             </button>
             {isDropdownOpen && (
               <div className="absolute left-0 mt-2 z-10 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
