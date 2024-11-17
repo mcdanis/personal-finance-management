@@ -1,13 +1,24 @@
 import Link from "next/link";
 import { useState } from "react";
 import Tabs from "../components/Transaction/Tabs";
+import { useAuth, useLogout } from "../hook/auth";
+import { H4 } from "../templates/LandingPage/components/headings";
+import ApiService from "../services/ApiService";
+
+const apiService = new ApiService();
 
 const HomePage = () => {
+  useAuth();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  const logout = useLogout();
+
+  const user = apiService.get("auth/current");
 
   return (
     <>
@@ -84,7 +95,9 @@ const HomePage = () => {
               Laporan
             </a>
           </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end text-sm/6">
+            <button onClick={logout}>Keluar</button>
+          </div>
         </nav>
       </header>
 
@@ -103,6 +116,7 @@ const HomePage = () => {
         </div>
         <div className="mx-auto max-w-7xl py-32 flex gap-4">
           <div className="flex-1 max-w-2xl p-6">
+            <H4>Hi ..</H4>
             <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
           </div>
 
@@ -134,7 +148,9 @@ const HomePage = () => {
                 <tr>
                   <td className="px-6 py-4 whitespace-nowrap">1</td>
                   <td className="px-6 py-4 whitespace-nowrap">Alice</td>
-                  <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    alice@example.com
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">Admin</td>
                   <td className="">
                     <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
@@ -185,7 +201,9 @@ const HomePage = () => {
                 <tr>
                   <td className="px-6 py-4 whitespace-nowrap">1</td>
                   <td className="px-6 py-4 whitespace-nowrap">Alice</td>
-                  <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    alice@example.com
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">Admin</td>
                   <td className="">
                     <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">

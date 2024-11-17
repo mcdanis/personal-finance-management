@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import ReportDropdownMenu from "./SmallPart/ReportDropdownMenu";
+import { useAuth, useLogout } from "../hook/auth";
 
 const Header = () => {
+  useAuth();
+  const logout = useLogout();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -97,7 +101,9 @@ const Header = () => {
           </div>
           <ReportDropdownMenu />
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end text-sm/6">
+          <button onClick={logout}>Keluar</button>
+        </div>
       </nav>
       {isMenuOpen && (
         <div className="lg:hidden" role="dialog" aria-modal="true">
