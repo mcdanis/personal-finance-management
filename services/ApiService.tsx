@@ -26,7 +26,8 @@ class ApiService {
 
   async get(endpoint: string) {
     if (!this.token) {
-      throw new Error("Token not found");
+      return;
+      // throw new Error("Token not found");
     }
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -38,24 +39,22 @@ class ApiService {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch data");
+      // throw new Error("Failed to fetch data");
+      return;
     }
 
     return await response.json();
   }
 
   async post(endpoint: string, data: any) {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    return await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `${this.token}`,
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error("Failed to post data");
-    }
-    return await response.json();
   }
 }
 

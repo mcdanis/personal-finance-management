@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Tabs from "../components/Transaction/Tabs";
 import { useAuth, useLogout } from "../hook/auth";
 import { H4 } from "../templates/LandingPage/components/headings";
 import ApiService from "../services/ApiService";
+import Header from "../components/Header";
 
 const apiService = new ApiService();
 
@@ -18,90 +19,37 @@ const HomePage = () => {
 
   const logout = useLogout();
 
-  const user = apiService.get("auth/current");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await apiService.get("auth/current");
+        setUser(response);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    logout();
+  }
 
   return (
     <>
-      <header className="absolute inset-x-0 top-0 z-50">
-        <nav
-          className="flex items-center justify-between p-6 lg:px-8"
-          aria-label="Global"
-        >
-          <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
-              />
-            </a>
-          </div>
-          <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="size-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                data-slot="icon"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            <a href="/" className="text-sm/6 font-semibold text-gray-900">
-              Home
-            </a>
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="text-sm/6 font-semibold text-gray-900 "
-              >
-                Transaksi &nbsp; ▽
-              </button>
+      <Header />
 
-              {isDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
-                    <Link
-                      href="/transaction/expenditure"
-                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
-                    >
-                      Pengeluaran
-                    </Link>
-                    <Link
-                      href="/transaction/income"
-                      className="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100"
-                    >
-                      Pemasukan
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-            <a href="#" className="text-sm/6 font-semibold text-gray-900">
-              Laporan
-            </a>
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end text-sm/6">
-            <button onClick={logout}>Keluar</button>
-          </div>
-        </nav>
-      </header>
-
-      <div className="relative isolate px-6 pt-14 lg:px-8">
+      <div className="relative isolate px-6 lg:px-8">
         <div
           className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
           aria-hidden="true"
@@ -116,7 +64,7 @@ const HomePage = () => {
         </div>
         <div className="mx-auto max-w-7xl py-32 flex gap-4">
           <div className="flex-1 max-w-2xl p-6">
-            <H4>Hi ..</H4>
+            <H4>Hi {user.name}</H4>
             <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
           </div>
 

@@ -6,10 +6,13 @@ import { DailyExpenditureReport, DailyIncomeReport } from "../Report/DailyReport
 import { MonthlyExpenditureReport, MonthlyIncomeReport } from "../Report/MonthlyReportTabContent"
 import { CustomExpenditureReport, CustomIncomeReport } from "../Report/CustomReportTabContent"
 
-const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
+const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '', content1, content2 }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const getTabContent = () => {
+    if (content1) {
+      return content1;
+    }
     if (isEdit === "expenditure") {
       return <ExpenditureEdit />;
     }
@@ -41,6 +44,11 @@ const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
   };
 
   const getTabContent2 = () => {
+
+    if (content2) {
+      return content2;
+    }
+
     if (type === "dailyReport") {
       return <DailyIncomeReport />;
     }
@@ -76,7 +84,7 @@ const Tabs = ({ tab1, tab2 = '', isEdit = '', type = '' }) => {
   ].filter(Boolean);
 
   return (
-    <div className="w-full max-w-4xl mx-auto z-10">
+    <div className="w-full max-w-4xl mx-auto z-10 mt-3">
       <div className="border-b border-gray-300">
         <div className="flex space-x-8">
           {tabs.map((tab, index) => (
