@@ -24,6 +24,7 @@ const AccountTabContent = () => {
     console.log(response)
     if (response.status >= 200 && response.status < 300) {
       alert('berhasil input');
+      setFormData({ accountName: '', ballance: '' });
     } else {
       setError("Terjadi kesalahan, coba lagi nanti");
     }
@@ -49,6 +50,7 @@ const AccountTabContent = () => {
               type="text"
               id="account"
               name="accountName"
+              value={formData.accountName}
               onChange={handleChange}
               className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="BCA, BSI, OVO, dll"
@@ -65,6 +67,7 @@ const AccountTabContent = () => {
               type="number"
               id="balance"
               name="ballance"
+              value={formData.ballance}
               onChange={handleChange}
               className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="5000000"
