@@ -1,49 +1,14 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Tabs from "../components/Transaction/Tabs";
-import { useAuth, useLogout } from "../hook/auth";
+import { useAuth, userCurrent } from "../hook/auth";
 import { H4 } from "../templates/LandingPage/components/headings";
-import ApiService from "../services/ApiService";
 import Header from "../components/Header";
-
-const apiService = new ApiService();
 
 const HomePage = () => {
   useAuth();
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const logout = useLogout();
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await apiService.get("auth/current");
-        setUser(response);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    logout();
-  }
+  const user = userCurrent();
 
   return (
     <>
@@ -64,7 +29,7 @@ const HomePage = () => {
         </div>
         <div className="mx-auto max-w-7xl py-32 flex gap-4">
           <div className="flex-1 max-w-2xl p-6">
-            <H4>Hi {user.name}</H4>
+            <H4>Hi {user?.name || "There"}</H4>
             <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
           </div>
 
