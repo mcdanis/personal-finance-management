@@ -18,7 +18,7 @@ const LoginPage = () => {
   useIsAuth();
 
   const [email, setEmail] = useState<string>("mcdani@gmail.com");
-  const [pass, setPassword] = useState<string>("qwerty123");
+  const [pass, setPassword] = useState<string>("dani123456");
   const [error, setError] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
