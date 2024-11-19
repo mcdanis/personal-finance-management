@@ -5,12 +5,14 @@ import ApiService from "../services/ApiService";
 const apiService = new ApiService();
 
 const getToken = (): string | null => {
-  return localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
+  }
+  return null;
 };
 
 export const useAuth = () => {
   const router = useRouter();
-
   useEffect(() => {
     const token = getToken();
     if (!token) {
@@ -21,6 +23,8 @@ export const useAuth = () => {
 
 export const useIsAuth = () => {
   const router = useRouter();
+  console.log('----------------');
+  console.log(getToken());
 
   useEffect(() => {
     const token = getToken();
@@ -44,10 +48,9 @@ export const useLogout = () => {
 };
 
 export const userCurrent = () => {
-  const logout = useLogout();
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const logout = useLogout();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -62,15 +65,15 @@ export const userCurrent = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [logout]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return null;
   }
 
-  if (!user) {
-    logout();
-  }
+  // if (!user) {
+  //   logout();
+  // }
 
   return user;
 };

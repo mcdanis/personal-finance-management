@@ -14,7 +14,7 @@ const AccountTabContent = () => {
     accountName: "",
     ballance: "",
     type: "",
-    userId: user.userId,
+    userId: "",
   });
 
   const [error, setError] = useState<string>("");
