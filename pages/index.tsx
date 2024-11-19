@@ -1,20 +1,22 @@
 import { useAuth, userCurrent } from "../hook/auth";
-// import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // import Link from "next/link";
 import Tabs from "../components/Transaction/Tabs";
 import { H4 } from "../templates/LandingPage/components/headings";
 import Header from "../components/Header";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const HomePage = () => {
   useAuth();
-  const storedUser = Cookies.get('user');  // Mendapatkan cookie yang berisi JSON string
-  const user = storedUser ? JSON.parse(storedUser) : null;  // Mem-parse JSON string menjadi objek
-  console.log(user.name)
-  console.log(user)
-  // if (user === null) {
-  //   return <div>Loading...</div>; // Menunggu data pengguna selesai dimuat
-  // }
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -34,7 +36,7 @@ const HomePage = () => {
         </div>
         <div className="mx-auto max-w-7xl py-32 flex gap-4">
           <div className="flex-1 max-w-2xl p-6">
-            {/* <H4>Hi {user?.name || ''}</H4> */}
+            {<H4>Hi {user?.name || ""}</H4>}
             <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
           </div>
 

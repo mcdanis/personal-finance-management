@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { useIsAuth } from "../hook/auth";
 import ApiService from "../services/ApiService";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const apiService = new ApiService();
 
@@ -26,18 +26,18 @@ const LoginPage = () => {
 
   const setUserCookie = (id: string, name: string) => {
     const user = { id, name }; // Simpan hanya id dan name
-    Cookies.set('user', JSON.stringify(user), { expires: 7 }); // Cookie expired after 7 days
+    Cookies.set("user", JSON.stringify(user), { expires: 7 }); // Cookie expired after 7 days
   };
 
   // Fungsi untuk mengambil user dari cookie
   const getUserCookie = () => {
-    const user = Cookies.get('user');
+    const user = Cookies.get("user");
     return user ? JSON.parse(user) : null;
   };
 
   // Fungsi untuk menghapus user dari cookie
   const clearUserCookie = () => {
-    Cookies.remove('user');
+    Cookies.remove("user");
   };
 
   // cookie batas
@@ -54,7 +54,7 @@ const LoginPage = () => {
       } else {
         sessionStorage.setItem("token", data.token);
       }
-      setUserCookie('123', 'dani');
+      setUserCookie(data.userId, data.name);
       router.push("/");
     } else {
       setError(data.message || "Login failed");

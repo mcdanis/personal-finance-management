@@ -1,14 +1,23 @@
 import React from "react";
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import Link from "next/link";
-import { userCurrent } from "../../hook/auth";
 import { H3 } from "../../templates/LandingPage/components/headings";
 import ApiService from "../../services/ApiService";
+import Cookies from "js-cookie";
 
 const apiService = new ApiService();
 
 const AccountTabContent = () => {
-  const user = userCurrent();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [accounts, setAccounts] = useState([]);
+
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     accountName: "",
@@ -16,6 +25,27 @@ const AccountTabContent = () => {
     type: "",
     userId: "",
   });
+
+  useEffect(() => {
+    if (user?.id) {
+      const fetchAccounts = async () => {
+        try {
+          setLoading(true);
+          const response = await apiService.get(`accounts/${user.id}`);
+          if (Array.isArray(response)) {
+            setAccounts(response);
+          } else {
+            setError("Data akun tidak ditemukan dalam format yang benar.");
+          }
+        } catch (error) {
+          setError("Gagal mengambil data akun");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAccounts();
+    }
+  }, [user]);
 
   const [error, setError] = useState<string>("");
 
@@ -26,7 +56,7 @@ const AccountTabContent = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-      userId: user.userId,
+      userId: user.id,
     }));
   };
 
@@ -36,12 +66,11 @@ const AccountTabContent = () => {
     const response = await apiService.post("account", formData);
     console.log(response);
     if (response.status >= 200 && response.status < 300) {
-      alert("berhasil input");
       setFormData({
         accountName: "",
         ballance: "",
         type: "",
-        userId: user.userId,
+        userId: user.id,
       });
     } else {
       setError("Terjadi kesalahan, coba lagi nanti");
@@ -139,52 +168,28 @@ const AccountTabContent = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            <tr>
-              <td className="px-6 py-4 whitespace-nowrap">1</td>
-              <td className="px-6 py-4 whitespace-nowrap">BNI</td>
-              <td className="px-6 py-4 whitespace-nowrap">Rp80.237.900</td>
-              <td className="">
-                <Link href={`/transaction/edit-expenditure/8`}>
-                  <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
-                    Edit
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16 4l4 4-8 8H8v-4l8-8z"
-                      />
-                    </svg>
-                  </button>
-                </Link>
-                &nbsp;|&nbsp;
-                <Link href={`/transaction/edit-expenditure/8`}>
-                  <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
-                    Hapus
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 6h18M9 6v12m6-12v12M3 6h18m-6 0v-2a2 2 0 00-2-2H9a2 2 0 00-2 2v2M5 6h14a1 1 0 011 1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a1 1 0 011-1z"
-                      />
-                    </svg>
-                  </button>
-                </Link>
-              </td>
-            </tr>
+            {accounts.map((account, index) => (
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{account.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  Rp{account.balance}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Link href={`/transaction/edit-expenditure/8`}>
+                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                      Edit
+                    </button>
+                  </Link>
+                  &nbsp;|&nbsp;
+                  <Link href={`/transaction/edit-expenditure/8`}>
+                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                      Hapus
+                    </button>
+                  </Link>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
