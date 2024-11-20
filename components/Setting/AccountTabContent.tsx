@@ -4,10 +4,13 @@ import Link from "next/link";
 import { H3 } from "../../templates/LandingPage/components/headings";
 import ApiService from "../../services/ApiService";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const apiService = new ApiService();
 
 const AccountTabContent = () => {
+  const notifySuccess = () => toast.success("Data berhasil disimpan!");
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [accounts, setAccounts] = useState([]);
@@ -72,8 +75,9 @@ const AccountTabContent = () => {
         type: "",
         userId: user.id,
       });
+      notifySuccess();
     } else {
-      setError("Terjadi kesalahan, coba lagi nanti");
+      setError("Terjadi kesalahan, data yang diinput tidak valid");
     }
   };
 

@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useRouter } from "next/router";
 import Loading from "../components/SmallPart/Loading";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [queryClient] = React.useState(() => new QueryClient());
@@ -43,6 +45,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
         <Component {...pageProps} />
+        <ToastContainer />
       </QueryClientProvider>
     </>
   );

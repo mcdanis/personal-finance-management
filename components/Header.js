@@ -100,9 +100,9 @@ const Header = () => {
             )}
           </div>
           <ReportDropdownMenu />
-          <a href="/setting" className="text-sm/6 font-bold text-gray-900">
+          <Link href="/setting" className="text-sm/6 font-bold text-gray-900">
             Pengaturan
-          </a>
+          </Link>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end text-sm/6">
           <button onClick={logout}>Keluar</button>
