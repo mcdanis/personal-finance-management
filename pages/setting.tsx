@@ -9,7 +9,7 @@ const SettingPage = () => {
   return (
     <>
       <Layout title="Pengaturan">
-        <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div className="relative isolate px-6 pt-40 lg:px-8">
           <div className="text-center">
             <H2>Pengaturan</H2>
           </div>

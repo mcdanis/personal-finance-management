@@ -46,6 +46,16 @@ class ApiService {
     return await response.json();
   }
 
+  async delete(endpoint: string) {
+    return await fetch(`${this.baseUrl}${endpoint}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${this.token}`,
+      },
+    });
+  }
+
   async post(endpoint: string, data: any) {
     return await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
