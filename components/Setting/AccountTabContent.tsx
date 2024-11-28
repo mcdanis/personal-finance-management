@@ -288,7 +288,7 @@ const AccountTabContent = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <Link href={`/setting/edit-account/${account.id}`}>
-                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                    <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                       Edit
                     </button>
                   </Link>

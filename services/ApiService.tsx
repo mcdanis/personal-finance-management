@@ -66,6 +66,18 @@ class ApiService {
       body: JSON.stringify(data),
     });
   }
+
+  async put(endpoint: string, data: any) {
+    return await fetch(`${this.baseUrl}${endpoint}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${this.token}`,
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
 }
 
 export default ApiService;
