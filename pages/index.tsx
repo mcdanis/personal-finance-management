@@ -1,14 +1,21 @@
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import Tabs from "../components/Transaction/Tabs";
 import { useAuth, userCurrent } from "../hook/auth";
+import { useState, useEffect } from "react";
+// import Link from "next/link";
+import Tabs from "../components/Transaction/Tabs";
 import { H4 } from "../templates/LandingPage/components/headings";
 import Header from "../components/Header";
+import Cookies from "js-cookie";
 
 const HomePage = () => {
   useAuth();
+  const [user, setUser] = useState(null);
 
-  const user = userCurrent();
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <>
@@ -29,7 +36,7 @@ const HomePage = () => {
         </div>
         <div className="mx-auto max-w-7xl py-32 flex gap-4">
           <div className="flex-1 max-w-2xl p-6">
-            <H4>Hi {user?.name || "There"}</H4>
+            {<H4>Hi {user?.name || ""}</H4>}
             <Tabs tab1="Input Pengeluaran" tab2="Input Pemasukan" type="home" />
           </div>
 
