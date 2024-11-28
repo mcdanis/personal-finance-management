@@ -6,16 +6,17 @@ import ApiService from "../../services/ApiService";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import ModalConfirm from "../SmallPart/ModalConfirm";
+import Validation from "../../validation/Validation";
+import { ToastFailed, ToastSuccess } from "../SmallPart/SmallPart";
 
 const apiService = new ApiService();
+const validation = new Validation();
 
 const AccountTabContent = () => {
   // modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
   const [selectedId, setSelectedId] = useState("");
-  const [yesBtn, setYesBtn] = useState("Ya");
-  const [noBtn, setNoBtn] = useState("Tidak");
 
   const handleDeleteClick = (id: number, name: string) => {
     setSelectedName(name);
@@ -31,9 +32,7 @@ const AccountTabContent = () => {
   const handleCancelDelete = () => {
     setModalOpen(false);
   };
-
-  const notifySuccess = (msg = "Data berhasil disimpan!") => toast.success(msg);
-  const notifyFailed = (msg = "Data gagal di input!") => toast.warning(msg);
+  // batas modal
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -88,34 +87,20 @@ const AccountTabContent = () => {
     }));
   };
 
-  const validateFields = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.accountName.trim()) {
-      newErrors.accountName = "Account name is required.";
-    }
-
-    if (!formData.ballance || isNaN(Number(formData.ballance))) {
-      newErrors.balance = "Balance must be a valid number.";
-    }
-
-    if (!formData.type) {
-      newErrors.type = "Type is required.";
-    }
-
+  const validateFields = validation.validateAccount();
+  if (validateFields) {
     setError(
-      Object.entries(newErrors)
+      Object.entries(validateFields)
         .map(([key, value]) => `${value}`)
         .join("<br>")
     );
-    return Object.keys(newErrors).length <= 0;
-  };
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!validateFields()) {
-      notifyFailed();
+      ToastFailed("Validasi gagal !");
       return;
     }
 
@@ -128,11 +113,11 @@ const AccountTabContent = () => {
         type: "",
         userId: user.id,
       });
-      notifySuccess();
+      ToastSuccess();
       fetchAccounts();
     } else {
       setError("Terjadi kesalahan, data yang diinput tidak valid");
-      notifyFailed();
+      ToastFailed();
     }
   };
 
@@ -144,12 +129,14 @@ const AccountTabContent = () => {
         setAccounts((prevAccounts) =>
           prevAccounts.filter((account) => account.id !== selectedId)
         );
-        notifySuccess(`${selectedName} berhasil di hapus`);
+        ToastSuccess(`${selectedName} berhasil di hapus`);
       } else {
-        notifyFailed(`${selectedName} gagal di hapus`);
+        ToastFailed(`${selectedName} gagal di hapus`);
       }
     } catch (error) {
-      notifyFailed(`Terjadi kesalahan saat menghapus ${selectedName}, coba lagi !`);
+      ToastFailed(
+        `Terjadi kesalahan saat menghapus ${selectedName}, coba lagi !`
+      );
     }
   };
 
@@ -310,8 +297,8 @@ const AccountTabContent = () => {
         message={`Apakah Anda yakin ingin menghapus "${selectedName}" ?`}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
-        yes={yesBtn}
-        no={noBtn}
+        yes="Ya"
+        no="Batal"
       />
     </>
   );
