@@ -1,9 +1,12 @@
+import { noSSR } from "next/dynamic";
 import React from "react";
 
 interface ModalConfirmProps {
   isOpen: boolean;
   title: string;
   message: string;
+  yes: string;
+  no: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -12,6 +15,8 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({
   isOpen,
   title,
   message,
+  yes,
+  no,
   onConfirm,
   onCancel,
 }) => {
@@ -27,13 +32,13 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({
             onClick={onCancel}
             className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
           >
-            Batal
+            {no}
           </button>
           <button
             onClick={onConfirm}
             className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white"
           >
-            Hapus
+            {yes}
           </button>
         </div>
       </div>

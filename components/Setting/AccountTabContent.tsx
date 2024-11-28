@@ -13,21 +13,25 @@ const AccountTabContent = () => {
   // modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+  const [yesBtn, setYesBtn] = useState("Ya");
+  const [noBtn, setNoBtn] = useState("Tidak");
 
-  const handleDeleteClick = (name: string) => {
+  const handleDeleteClick = (id: number, name: string) => {
     setSelectedName(name);
+    setSelectedId(id);
     setModalOpen(true);
   };
 
   const handleConfirmDelete = () => {
-    console.log(`Hapus item: ${selectedName}`);
+    handleDelete();
     setModalOpen(false);
   };
 
   const handleCancelDelete = () => {
     setModalOpen(false);
   };
-  // modal batas
+
   const notifySuccess = (msg = "Data berhasil disimpan!") => toast.success(msg);
   const notifyFailed = (msg = "Data gagal di input!") => toast.warning(msg);
 
@@ -132,26 +136,20 @@ const AccountTabContent = () => {
     }
   };
 
-  const handleDelete = async (id: number, name: string) => {
-    const isConfirmed = window.confirm(
-      `Apakah Anda yakin ingin menghapus ${name} ini?`
-    );
-
-    if (!isConfirmed) return;
-
+  const handleDelete = async () => {
     try {
-      const response = await apiService.delete(`account/${id}`);
+      const response = await apiService.delete(`account/${selectedId}`);
 
       if (response.ok) {
         setAccounts((prevAccounts) =>
-          prevAccounts.filter((account) => account.id !== id)
+          prevAccounts.filter((account) => account.id !== selectedId)
         );
-        notifySuccess(`${name} berhasil di hapus`);
+        notifySuccess(`${selectedName} berhasil di hapus`);
       } else {
-        notifyFailed(`${name} gagal di hapus`);
+        notifyFailed(`${selectedName} gagal di hapus`);
       }
     } catch (error) {
-      notifyFailed(`Terjadi kesalahan saat menghapus ${name}, coba lagi !`);
+      notifyFailed(`Terjadi kesalahan saat menghapus ${selectedName}, coba lagi !`);
     }
   };
 
@@ -294,8 +292,7 @@ const AccountTabContent = () => {
                   </Link>
                   &nbsp;|&nbsp;
                   <button
-                    // onClick={() => handleDeleteClick("Item Name")}
-                    onClick={() => handleDelete(account.id, account.name)}
+                    onClick={() => handleDeleteClick(account.id, account.name)}
                     className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                   >
                     Hapus
@@ -310,9 +307,11 @@ const AccountTabContent = () => {
       <ModalConfirm
         isOpen={isModalOpen}
         title="Konfirmasi Hapus"
-        message={`Apakah Anda yakin ingin menghapus ${selectedName} ini?`}
+        message={`Apakah Anda yakin ingin menghapus "${selectedName}" ?`}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+        yes={yesBtn}
+        no={noBtn}
       />
     </>
   );
