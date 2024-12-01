@@ -1,49 +1,35 @@
 import React from "react";
 import { useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
-import { H3 } from "../../templates/LandingPage/components/headings";
-import ApiService from "../../services/ApiService";
+import { H3 } from "@/templates/LandingPage/components/headings";
+import ApiService from "@/services/ApiService";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
 import ModalConfirm from "../SmallPart/ModalConfirm";
-import Validation from "../../validation/Validation";
-import { ToastFailed, ToastSuccess } from "../SmallPart/SmallPart";
+import Validation from "@/validation/Validation";
+import {
+  ToastFailed,
+  ToastSuccess,
+  formatCurrency,
+  handleDelete,
+  jsonToString,
+} from "../SmallPart/SmallPart";
 
 const apiService = new ApiService();
-const validation = new Validation();
+
+interface Account {
+  id: number;
+  name: string;
+  balance: number;
+  type: string;
+}
 
 const AccountTabContent = () => {
+  const [error, setError] = useState<string>("");
+
   // modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
-  const [selectedId, setSelectedId] = useState("");
-
-  const handleDeleteClick = (id: number, name: string) => {
-    setSelectedName(name);
-    setSelectedId(id);
-    setModalOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    handleDelete();
-    setModalOpen(false);
-  };
-
-  const handleCancelDelete = () => {
-    setModalOpen(false);
-  };
-  // batas modal
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [accounts, setAccounts] = useState([]);
-
-  useEffect(() => {
-    const storedUser = Cookies.get("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const [selectedId, setSelectedId] = useState<number>();
 
   const [formData, setFormData] = useState({
     accountName: "",
@@ -52,11 +38,44 @@ const AccountTabContent = () => {
     userId: "",
   });
 
+  const [user, setUser] = useState(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  const handleDeleteClick = (id: number, name: string) => {
+    setSelectedName(name);
+    setSelectedId(id);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const deleteSuccess = await handleDelete(
+      `account/${selectedId}`,
+      selectedName
+    );
+    if (deleteSuccess) {
+      setAccounts((prevAccounts) =>
+        prevAccounts.filter((account) => account.id !== selectedId)
+      );
+    }
+    setModalOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setModalOpen(false);
+  };
+  // batas modal
+
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const fetchAccounts = async () => {
     if (!user?.id) return;
 
     try {
-      setLoading(true);
       const response = await apiService.get(`accounts/${user.id}`);
       if (Array.isArray(response)) {
         setAccounts(response);
@@ -66,15 +85,12 @@ const AccountTabContent = () => {
     } catch (error) {
       setError("Gagal mengambil data akun");
     } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchAccounts();
   }, [user]);
-
-  const [error, setError] = useState<string>("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -87,25 +103,19 @@ const AccountTabContent = () => {
     }));
   };
 
-  const validateFields = validation.validateAccount();
-  if (validateFields) {
-    setError(
-      Object.entries(validateFields)
-        .map(([key, value]) => `${value}`)
-        .join("<br>")
-    );
-  }
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!validateFields()) {
+    const validate = Validation.validateAccount(formData);
+    if (validate != true) {
+      setError(jsonToString(validate));
       ToastFailed("Validasi gagal !");
       return;
     }
 
+    setError("");
+
     const response = await apiService.post("account", formData);
-    console.log(response);
     if (response.status >= 200 && response.status < 300) {
       setFormData({
         accountName: "",
@@ -121,25 +131,6 @@ const AccountTabContent = () => {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await apiService.delete(`account/${selectedId}`);
-
-      if (response.ok) {
-        setAccounts((prevAccounts) =>
-          prevAccounts.filter((account) => account.id !== selectedId)
-        );
-        ToastSuccess(`${selectedName} berhasil di hapus`);
-      } else {
-        ToastFailed(`${selectedName} gagal di hapus`);
-      }
-    } catch (error) {
-      ToastFailed(
-        `Terjadi kesalahan saat menghapus ${selectedName}, coba lagi !`
-      );
-    }
-  };
-
   const getTypeLabel = (type: string) => {
     const typeMap: { [key: string]: string } = {
       g: "Giro",
@@ -147,10 +138,6 @@ const AccountTabContent = () => {
       w: "Wallet",
     };
     return typeMap[type] || "Unknown";
-  };
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("id-ID").format(value);
   };
 
   return (

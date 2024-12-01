@@ -1,9 +1,10 @@
 import React from "react";
-import Layout from "../components/Layout";
-import Tabs from "../components/Transaction/Tabs";
-import { H4, H2 } from "../templates/LandingPage/components/headings";
-import CategoryTabContent from "../components/Setting/CategoryTabContent";
-import AccountTabContent from "../components/Setting/AccountTabContent";
+import Layout from "@/components/Layout";
+import Tabs from "@/components/Transaction/Tabs";
+import { H4, H2 } from "@/templates/LandingPage/components/headings";
+import CategoryTabContent from "@/components/Setting/CategoryTabContent";
+import AccountTabContent from "@/components/Setting/AccountTabContent";
+import SubCategoryTabContent from "@/components/Setting/SubCategoryTabContent";
 
 const SettingPage = () => {
   return (
@@ -18,7 +19,13 @@ const SettingPage = () => {
             tab1="Account"
             tab2="Kategori"
             content1={<AccountTabContent />}
-            content2={<CategoryTabContent />}
+            content2={
+              <div>
+                <CategoryTabContent />
+                <br />
+                <SubCategoryTabContent />
+              </div>
+            }
           />
         </div>
       </Layout>

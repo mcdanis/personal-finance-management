@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { H3 } from "../../templates/LandingPage/components/headings";
+import { H3 } from "@/templates/LandingPage/components/headings";
 
 import { useState } from "react";
 export const ExpenditureTabContentData = () => {

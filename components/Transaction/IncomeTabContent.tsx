@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { H3 } from "../../templates/LandingPage/components/headings";
+import { H3 } from "@/templates/LandingPage/components/headings";
 
 export const IncomeTabContentData = () => {
   return (

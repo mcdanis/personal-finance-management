@@ -2,7 +2,8 @@
 require("dotenv").config();
 
 class ApiService {
-  private baseUrl;
+  public baseUrl;
+  public defaultHeader;
   private token: string | null;
 
   constructor() {
@@ -12,6 +13,10 @@ class ApiService {
       this.token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
     }
+    this.defaultHeader = {
+      "Content-Type": "application/json",
+      Authorization: `${this.token}`,
+    };
   }
 
   async login(email: string, pass: string) {
@@ -32,10 +37,7 @@ class ApiService {
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${this.token}`,
-      },
+      headers: this.defaultHeader,
     });
 
     if (!response.ok) {
@@ -49,20 +51,14 @@ class ApiService {
   async delete(endpoint: string) {
     return await fetch(`${this.baseUrl}${endpoint}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${this.token}`,
-      },
+      headers: this.defaultHeader,
     });
   }
 
   async post(endpoint: string, data: any) {
     return await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${this.token}`,
-      },
+      headers: this.defaultHeader,
       body: JSON.stringify(data),
     });
   }
@@ -70,14 +66,10 @@ class ApiService {
   async put(endpoint: string, data: any) {
     return await fetch(`${this.baseUrl}${endpoint}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${this.token}`,
-      },
+      headers: this.defaultHeader,
       body: JSON.stringify(data),
     });
   }
-
 }
 
 export default ApiService;
