@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { H3, H2 } from "@/templates/LandingPage/components/headings";
 import ApiService from "@/services/ApiService";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import Validation from "@/validation/Validation";
 import {
   ToastFailed,
@@ -11,29 +12,41 @@ import {
 } from "@/components/SmallPart/SmallPart";
 
 interface FormData {
-  category: string;
+  name: string;
   id: number;
+  categoryId: number | null;
 }
 
-const EditCategory = () => {
+interface Category {
+  name: string;
+}
+
+const EditAccount = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  const [categories, setCategories] = useState<Category[]>([]);
+
   const [formData, setFormData] = useState<FormData>({
-    category: "",
+    name: "",
+    id: id,
+    categoryId: null,
   });
+
+  const [user, setUser] = useState(null);
 
   const [error, setError] = useState<string>("");
 
   const apiService = new ApiService();
 
-  const fetchAccount = async () => {
+  const fetchSubCategory = async () => {
     try {
-      const response = await apiService.get(`category/${id}`);
+      const response = await apiService.get(`sub-category/${id}`);
       if (response && typeof response === "object") {
         setFormData({
-          category: response[0].name || "",
+          name: response[0].name || "",
           id: response[0].id || "",
+          categoryId: response[0].category_id || "",
         });
       } else {
         setError("Data akun tidak ditemukan dalam format yang benar.");
@@ -56,14 +69,24 @@ const EditCategory = () => {
 
   useEffect(() => {
     if (id) {
-      fetchAccount();
+      fetchSubCategory();
     }
   }, [id]);
 
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategory();
+  }, [user]);
+
   const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
-
-    const validate = Validation.validateCategory(formData);
+    const validate = Validation.validateSubCategory(formData);
     if (validate != true) {
       setError(jsonToString(validate));
       ToastFailed();
@@ -71,12 +94,27 @@ const EditCategory = () => {
     }
     setError("");
 
-    const response = await apiService.put(`category/${id}`, formData);
+    const response = await apiService.put(`sub-category/${id}`, formData);
     if (response.status >= 200 && response.status < 300) {
       ToastSuccess();
     } else {
       setError("Terjadi kesalahan, data yang diinput tidak valid");
       ToastFailed();
+    }
+  };
+
+  const fetchCategory = async () => {
+    if (!user?.id) return;
+
+    try {
+      const response = await apiService.get(`categories/${user.id}`);
+      if (Array.isArray(response)) {
+        setCategories(response);
+      } else {
+        setError("Data kategori tidak ditemukan dalam format yang benar.");
+      }
+    } catch (error) {
+      setError("Gagal mengambil data akun");
     }
   };
 
@@ -117,7 +155,7 @@ const EditCategory = () => {
                 Kembali
               </button>
 
-              <H3>Edit Kategori</H3>
+              <H3>Edit Sub Category</H3>
               {error && (
                 <div>
                   <div className="bg-red-100 border-l-4 border-red-500 p-4 mb-4 text-red-600">
@@ -135,17 +173,41 @@ const EditCategory = () => {
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Kategori
+                    Nama Sub-Kategori
                   </label>
                   <input
                     type="text"
                     id="name"
-                    name="category"
-                    value={formData.category}
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="..."
+                    placeholder="Kebutuhan bahan pokok"
                   />
+                </div>
+                <div>
+                  <label
+                    htmlFor="type"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Kategori Utama
+                  </label>
+                  <select
+                    id="options"
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleChange}
+                    className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="" disabled>
+                      Pilih Kategori Utama
+                    </option>
+                    {categories.map((cat, index) => (
+                      <option key={index} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))};
+                  </select>
                 </div>
               </div>
               <button
@@ -162,4 +224,4 @@ const EditCategory = () => {
   );
 };
 
-export default EditCategory;
+export default EditAccount;

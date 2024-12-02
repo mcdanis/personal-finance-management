@@ -49,9 +49,8 @@ export default class Validation {
 
   static validateSubCategory(formData: any) {
     const newErrors: Record<any, any> = {};
-
     const subCategory = this.required(formData.name, "Sub Kategori");
-    const categoryId = this.required(formData.categoryId, "Kategori Utama");
+    const categoryId = this.required2(formData.categoryId, "Kategori Utama");
 
     if (subCategory) newErrors.name = subCategory;
     if (categoryId) newErrors.categoryId = categoryId;

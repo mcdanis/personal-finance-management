@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from "react";
 import ApiService from "@/services/ApiService";
 import Cookies from "js-cookie";
 import Validation from "@/validation/Validation";
+import ModalConfirm from "../SmallPart/ModalConfirm";
 import Link from "next/link";
 import {
   ToastFailed,
@@ -18,7 +19,8 @@ interface Category {
 
 interface SubCategory {
   name: string;
-  categoryId: number;
+  category_id: number;
+  category_name: string;
 }
 
 const SubCategoryTabContent = () => {
@@ -49,7 +51,6 @@ const SubCategoryTabContent = () => {
   useEffect(() => {
     fetchCategory();
     fetchSubCategory();
-    // fetchSubCategory();
   }, [user]);
 
   const fetchCategory = async () => {
@@ -109,10 +110,11 @@ const SubCategoryTabContent = () => {
     if (response.status >= 200 && response.status < 300) {
       setFormData({
         name: "",
+        categoryId: "",
         userId: user.id,
       });
       ToastSuccess();
-      //   fetchCategory();
+      fetchSubCategory();
     } else {
       setError("Terjadi kesalahan!, data yang diinput tidak valid");
       ToastFailed();
@@ -131,7 +133,7 @@ const SubCategoryTabContent = () => {
       selectedName
     );
     if (deleteSuccess) {
-      setCategories((prevSubCategory) =>
+      setSubCategories((prevSubCategory) =>
         prevSubCategory.filter((subCategory) => subCategory.id !== selectedId)
       );
     }
@@ -203,8 +205,7 @@ const SubCategoryTabContent = () => {
                 <option key={index} value={cat.id}>
                   {cat.name}
                 </option>
-              ))}
-              ;
+              ))};
             </select>
           </div>
         </div>
@@ -223,7 +224,10 @@ const SubCategoryTabContent = () => {
               No
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Nama Kategori
+              Nama Sub Kategori
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Kategori
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
           </tr>
@@ -235,15 +239,16 @@ const SubCategoryTabContent = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 {subCategory.name}
               </td>
+              <td className="px-6 py-4 whitespace-nowrap">{subCategory.category_name}</td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <Link href={`/setting/edit-category/${subCategory.id}`}>
+                <Link href={`/setting/edit-sub-category/${subCategory.id}`}>
                   <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                     Edit
                   </button>
                 </Link>
                 &nbsp;|&nbsp;
                 <button
-                  // onClick={() => handleDeleteClick(subCategory.id, subCategory.name)}
+                  onClick={() => handleDeleteClick(subCategory.id, subCategory.name)}
                   className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                 >
                   Hapus
