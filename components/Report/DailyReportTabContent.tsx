@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { H4, H2 } from "../../templates/LandingPage/components/headings";
+import { H4, H2 } from "@/templates/LandingPage/components/headings";
 
-const TemplateDailyReport = ({ title = '', classType = '' }) => {
+const TemplateDailyReport = ({ title = "", classType = "" }) => {
   return (
     <div className="border-b border-gray-300">
       <div className="flex flex-wrap">
@@ -20,8 +20,10 @@ const TemplateDailyReport = ({ title = '', classType = '' }) => {
           </div>
           <div className="text-right pb-3">
             <div className="relative text-center rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-              <span className="text-orange-600 font-bold text-base">Item Terbesar</span> : Rp20.000
-              &nbsp;|&nbsp;&nbsp;
+              <span className="text-orange-600 font-bold text-base">
+                Item Terbesar
+              </span>{" "}
+              : Rp20.000 &nbsp;|&nbsp;&nbsp;
               <span className="font-bold">Item Terkecil </span>: Rp20.000
             </div>
           </div>
@@ -47,7 +49,9 @@ const TemplateDailyReport = ({ title = '', classType = '' }) => {
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap">1</td>
                 <td className="px-6 py-4 whitespace-nowrap">Alice</td>
-                <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  alice@example.com
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">kat</td>
                 <td className="">
                   <Link href={`/transaction/edit-expenditure/8`}>
@@ -99,7 +103,9 @@ const TemplateDailyReport = ({ title = '', classType = '' }) => {
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap">3</td>
                 <td className="px-6 py-4 whitespace-nowrap">Charlie</td>
-                <td className="px-6 py-4 whitespace-nowrap">charlie@example.com</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  charlie@example.com
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">kat</td>
                 <td className="">
                   <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
@@ -126,12 +132,12 @@ const TemplateDailyReport = ({ title = '', classType = '' }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const DailyExpenditureReport = () => {
-  return <TemplateDailyReport title="Pengeluaran" classType="bg-yellow-100" />
+  return <TemplateDailyReport title="Pengeluaran" classType="bg-yellow-100" />;
 };
 export const DailyIncomeReport = () => {
-  return <TemplateDailyReport title="Pemasukan" classType="bg-green-100" />
+  return <TemplateDailyReport title="Pemasukan" classType="bg-green-100" />;
 };

@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { H3, H2 } from "@/templates/LandingPage/components/headings";
 import ApiService from "@/services/ApiService";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import Validation from "@/validation/Validation";
 import {
   ToastFailed,
@@ -11,34 +12,41 @@ import {
 } from "@/components/SmallPart/SmallPart";
 
 interface FormData {
-  accountName: string;
-  ballance: string;
-  type: string;
+  name: string;
+  id: number;
+  categoryId: number | null;
+}
+
+interface Category {
+  name: string;
 }
 
 const EditAccount = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  const [categories, setCategories] = useState<Category[]>([]);
+
   const [formData, setFormData] = useState<FormData>({
-    accountName: "",
-    ballance: "",
-    type: "",
+    name: "",
+    id: id,
+    categoryId: null,
   });
+
+  const [user, setUser] = useState(null);
 
   const [error, setError] = useState<string>("");
 
   const apiService = new ApiService();
 
-  // Fungsi untuk mengambil data dari API
-  const fetchAccount = async () => {
+  const fetchSubCategory = async () => {
     try {
-      const response = await apiService.get(`account/${id}`);
+      const response = await apiService.get(`sub-category/${id}`);
       if (response && typeof response === "object") {
         setFormData({
-          accountName: response[0].name || "",
-          ballance: response[0].balance || "",
-          type: response[0].type || "",
+          name: response[0].name || "",
+          id: response[0].id || "",
+          categoryId: response[0].category_id || "",
         });
       } else {
         setError("Data akun tidak ditemukan dalam format yang benar.");
@@ -61,14 +69,24 @@ const EditAccount = () => {
 
   useEffect(() => {
     if (id) {
-      fetchAccount();
+      fetchSubCategory();
     }
   }, [id]);
 
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategory();
+  }, [user]);
+
   const handleUpdate = async (e: FormEvent) => {
     e.preventDefault();
-
-    const validate = Validation.validateAccount(formData);
+    const validate = Validation.validateSubCategory(formData);
     if (validate != true) {
       setError(jsonToString(validate));
       ToastFailed();
@@ -76,7 +94,7 @@ const EditAccount = () => {
     }
     setError("");
 
-    const response = await apiService.put(`account/${id}`, formData);
+    const response = await apiService.put(`sub-category/${id}`, formData);
     if (response.status >= 200 && response.status < 300) {
       ToastSuccess();
     } else {
@@ -85,14 +103,29 @@ const EditAccount = () => {
     }
   };
 
+  const fetchCategory = async () => {
+    if (!user?.id) return;
+
+    try {
+      const response = await apiService.get(`categories/${user.id}`);
+      if (Array.isArray(response)) {
+        setCategories(response);
+      } else {
+        setError("Data kategori tidak ditemukan dalam format yang benar.");
+      }
+    } catch (error) {
+      setError("Gagal mengambil data akun");
+    }
+  };
+
   const back = () => {
     router.back();
   };
   return (
-    <Layout title="Edit Account">
+    <Layout title="Edit Kategori">
       <div className="relative isolate px-6 pt-40 lg:px-8">
         <div className="text-center">
-          <H2>Edit Account</H2>
+          <H2>Edit Kategori</H2>
         </div>
         <div className="w-full max-w-4xl mx-auto z-10 mt-3">
           <div className="border-b border-gray-300">
@@ -122,7 +155,7 @@ const EditAccount = () => {
                 Kembali
               </button>
 
-              <H3>Edit Account</H3>
+              <H3>Edit Sub Category</H3>
               {error && (
                 <div>
                   <div className="bg-red-100 border-l-4 border-red-500 p-4 mb-4 text-red-600">
@@ -137,19 +170,19 @@ const EditAccount = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
-                    htmlFor="account"
+                    htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Nama Account
+                    Nama Sub-Kategori
                   </label>
                   <input
                     type="text"
-                    id="account"
-                    name="accountName"
-                    value={formData.accountName}
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="BCA, BSI, OVO, dll"
+                    placeholder="Kebutuhan bahan pokok"
                   />
                 </div>
                 <div>
@@ -157,39 +190,24 @@ const EditAccount = () => {
                     htmlFor="type"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Jenis Account
+                    Kategori Utama
                   </label>
                   <select
-                    id="type"
-                    name="type"
-                    value={formData.type}
+                    id="options"
+                    name="categoryId"
+                    value={formData.categoryId}
                     onChange={handleChange}
                     className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="" disabled>
-                      Pilih jenis Account
+                      Pilih Kategori Utama
                     </option>
-                    <option value="s">Saving</option>
-                    <option value="g">Giro</option>
-                    <option value="w">Wallet</option>
+                    {categories.map((cat, index) => (
+                      <option key={index} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))};
                   </select>
-                </div>
-                <div>
-                  <label
-                    htmlFor="balance"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Balance
-                  </label>
-                  <input
-                    type="number"
-                    id="balance"
-                    name="ballance"
-                    value={formData.ballance}
-                    onChange={handleChange}
-                    className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="5000000"
-                  />
                 </div>
               </div>
               <button

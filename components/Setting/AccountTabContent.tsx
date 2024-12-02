@@ -1,46 +1,35 @@
 import React from "react";
 import { useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
-import { H3 } from "../../templates/LandingPage/components/headings";
-import ApiService from "../../services/ApiService";
+import { H3 } from "@/templates/LandingPage/components/headings";
+import ApiService from "@/services/ApiService";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
 import ModalConfirm from "../SmallPart/ModalConfirm";
+import Validation from "@/validation/Validation";
+import {
+  ToastFailed,
+  ToastSuccess,
+  formatCurrency,
+  handleDelete,
+  jsonToString,
+} from "../SmallPart/SmallPart";
 
 const apiService = new ApiService();
 
+interface Account {
+  id: number;
+  name: string;
+  balance: number;
+  type: string;
+}
+
 const AccountTabContent = () => {
+  const [error, setError] = useState<string>("");
+
   // modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedName, setSelectedName] = useState("");
-
-  const handleDeleteClick = (name: string) => {
-    setSelectedName(name);
-    setModalOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    console.log(`Hapus item: ${selectedName}`);
-    setModalOpen(false);
-  };
-
-  const handleCancelDelete = () => {
-    setModalOpen(false);
-  };
-  // modal batas
-  const notifySuccess = (msg = "Data berhasil disimpan!") => toast.success(msg);
-  const notifyFailed = (msg = "Data gagal di input!") => toast.warning(msg);
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [accounts, setAccounts] = useState([]);
-
-  useEffect(() => {
-    const storedUser = Cookies.get("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const [selectedId, setSelectedId] = useState<number>();
 
   const [formData, setFormData] = useState({
     accountName: "",
@@ -49,11 +38,44 @@ const AccountTabContent = () => {
     userId: "",
   });
 
+  const [user, setUser] = useState(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  const handleDeleteClick = (id: number, name: string) => {
+    setSelectedName(name);
+    setSelectedId(id);
+    setModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const deleteSuccess = await handleDelete(
+      `account/${selectedId}`,
+      selectedName
+    );
+    if (deleteSuccess) {
+      setAccounts((prevAccounts) =>
+        prevAccounts.filter((account) => account.id !== selectedId)
+      );
+    }
+    setModalOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setModalOpen(false);
+  };
+  // batas modal
+
+  useEffect(() => {
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const fetchAccounts = async () => {
     if (!user?.id) return;
 
     try {
-      setLoading(true);
       const response = await apiService.get(`accounts/${user.id}`);
       if (Array.isArray(response)) {
         setAccounts(response);
@@ -63,15 +85,12 @@ const AccountTabContent = () => {
     } catch (error) {
       setError("Gagal mengambil data akun");
     } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchAccounts();
   }, [user]);
-
-  const [error, setError] = useState<string>("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -84,39 +103,19 @@ const AccountTabContent = () => {
     }));
   };
 
-  const validateFields = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.accountName.trim()) {
-      newErrors.accountName = "Account name is required.";
-    }
-
-    if (!formData.ballance || isNaN(Number(formData.ballance))) {
-      newErrors.balance = "Balance must be a valid number.";
-    }
-
-    if (!formData.type) {
-      newErrors.type = "Type is required.";
-    }
-
-    setError(
-      Object.entries(newErrors)
-        .map(([key, value]) => `${value}`)
-        .join("<br>")
-    );
-    return Object.keys(newErrors).length <= 0;
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!validateFields()) {
-      notifyFailed();
+    const validate = Validation.validateAccount(formData);
+    if (validate != true) {
+      setError(jsonToString(validate));
+      ToastFailed("Validasi gagal !");
       return;
     }
 
+    setError("");
+
     const response = await apiService.post("account", formData);
-    console.log(response);
     if (response.status >= 200 && response.status < 300) {
       setFormData({
         accountName: "",
@@ -124,34 +123,11 @@ const AccountTabContent = () => {
         type: "",
         userId: user.id,
       });
-      notifySuccess();
+      ToastSuccess();
       fetchAccounts();
     } else {
       setError("Terjadi kesalahan, data yang diinput tidak valid");
-      notifyFailed();
-    }
-  };
-
-  const handleDelete = async (id: number, name: string) => {
-    const isConfirmed = window.confirm(
-      `Apakah Anda yakin ingin menghapus ${name} ini?`
-    );
-
-    if (!isConfirmed) return;
-
-    try {
-      const response = await apiService.delete(`account/${id}`);
-
-      if (response.ok) {
-        setAccounts((prevAccounts) =>
-          prevAccounts.filter((account) => account.id !== id)
-        );
-        notifySuccess(`${name} berhasil di hapus`);
-      } else {
-        notifyFailed(`${name} gagal di hapus`);
-      }
-    } catch (error) {
-      notifyFailed(`Terjadi kesalahan saat menghapus ${name}, coba lagi !`);
+      ToastFailed();
     }
   };
 
@@ -162,10 +138,6 @@ const AccountTabContent = () => {
       w: "Wallet",
     };
     return typeMap[type] || "Unknown";
-  };
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("id-ID").format(value);
   };
 
   return (
@@ -294,8 +266,7 @@ const AccountTabContent = () => {
                   </Link>
                   &nbsp;|&nbsp;
                   <button
-                    // onClick={() => handleDeleteClick("Item Name")}
-                    onClick={() => handleDelete(account.id, account.name)}
+                    onClick={() => handleDeleteClick(account.id, account.name)}
                     className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
                   >
                     Hapus
@@ -310,9 +281,11 @@ const AccountTabContent = () => {
       <ModalConfirm
         isOpen={isModalOpen}
         title="Konfirmasi Hapus"
-        message={`Apakah Anda yakin ingin menghapus ${selectedName} ini?`}
+        message={`Apakah Anda yakin ingin menghapus "${selectedName}" ?`}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+        yes="Ya"
+        no="Batal"
       />
     </>
   );
