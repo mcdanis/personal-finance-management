@@ -28,10 +28,8 @@ export default class Validation {
     if (balanceError) newErrors.balance = balanceError;
     if (typeError) newErrors.type = typeError;
 
-    if (Object.keys(newErrors).length <= 0) {
-      return true;
-    }
-    return newErrors;
+    return this.validationCheckResult(newErrors)
+
   }
 
   static validateCategory(formData: any) {
@@ -41,10 +39,8 @@ export default class Validation {
 
     if (category) newErrors.category = category;
 
-    if (Object.keys(newErrors).length <= 0) {
-      return true;
-    }
-    return newErrors;
+    return this.validationCheckResult(newErrors)
+
   }
 
   static validateSubCategory(formData: any) {
@@ -55,9 +51,34 @@ export default class Validation {
     if (subCategory) newErrors.name = subCategory;
     if (categoryId) newErrors.categoryId = categoryId;
 
-    if (Object.keys(newErrors).length <= 0) {
+    return this.validationCheckResult(newErrors)
+
+  }
+
+  static validationCheckResult(msg: object) {
+    if (Object.keys(msg).length <= 0) {
       return true;
     }
-    return newErrors;
+    return msg;
+  }
+
+  static validateExpenditure(formData: any) {
+    const newErrors: Record<any, any> = {};
+
+    const name = this.required(formData.name, "Pengeluaran")
+    const date = this.required2(formData.date, "Tanggal Input")
+    const categoryId = this.required2(formData.categoryId, "Kategori Utama")
+    const subCategoryId = this.required2(formData.subCategoryId, "Sub Kategori")
+    const description = this.required(formData.description, "Keterangan")
+    const value = this.isNumber(formData.value, "Nominal")
+
+    if (subCategoryId) newErrors.subCategoryId = subCategoryId;
+    if (categoryId) newErrors.categoryId = categoryId;
+    if (name) newErrors.name = name;
+    if (date) newErrors.date = date;
+    if (description) newErrors.description = description;
+    if (value) newErrors.value = value;
+
+    return this.validationCheckResult(newErrors)
   }
 }

@@ -2,7 +2,6 @@ import React from "react";
 import Layout from "../../components/Layout";
 import Tabs from "../../components/Transaction/Tabs";
 import { H1, H2 } from "../../templates/LandingPage/components/headings";
-
 const DebitPage = () => {
   return (
     <>
