@@ -25,6 +25,11 @@ interface SubCategory {
   category_name: string;
 }
 
+interface Account {
+  name: string;
+  id: number;
+}
+
 export const ExpenditureTabContentData = () => {
   return (
     <div className="overflow-x-auto">
@@ -137,6 +142,7 @@ export const ExpenditureTabContentInput = () => {
   const [error, setError] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   const [formData, setFormData] = useState<Expenditure>({
     name: "",
@@ -154,6 +160,11 @@ export const ExpenditureTabContentInput = () => {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  useEffect(() => {
+    fetchCategories()
+    fetchAccounts()
+  }, [user]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -176,7 +187,7 @@ export const ExpenditureTabContentInput = () => {
     console.log(validation)
   };
 
-  const fetchCategory = async () => {
+  const fetchCategories = async () => {
     if (!user?.id) return;
 
     try {
@@ -200,6 +211,22 @@ export const ExpenditureTabContentInput = () => {
         setSubCategories(response);
       } else {
         setError("Data sub kategori tidak ditemukan dalam format yang benar.");
+      }
+    } catch (error) {
+      setError("Gagal mengambil data akun");
+    }
+  };
+
+
+  const fetchAccounts = async () => {
+    if (!user?.id) return;
+
+    try {
+      const response = await apiService.get(`accounts/${user.id}`);
+      if (Array.isArray(response)) {
+        setAccounts(response);
+      } else {
+        setError("Account tidak ditemukan dalam format yang benar.");
       }
     } catch (error) {
       setError("Gagal mengambil data akun");
@@ -259,11 +286,12 @@ export const ExpenditureTabContentInput = () => {
           onChange={handleChange}
           className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-          <option value="">Pilih kategori</option>
-          <option value="makanan">Makanan</option>
-          <option value="transportasi">Transportasi</option>
-          <option value="hiburan">Hiburan</option>
-          <option value="lainnya">Lainnya</option>
+          <option value="">Pilih Akun</option>
+          {accounts.map((cat, index) => (
+            <option key={index} value={cat.id}>
+              {cat.name}
+            </option>
+          ))};
         </select>
       </div>
       <div>
@@ -281,21 +309,22 @@ export const ExpenditureTabContentInput = () => {
           className="mt-2 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">Pilih kategori</option>
-          <option value="makanan">Makanan</option>
-          <option value="transportasi">Transportasi</option>
-          <option value="hiburan">Hiburan</option>
-          <option value="lainnya">Lainnya</option>
+          {categories.map((cat, index) => (
+            <option key={index} value={cat.id}>
+              {cat.name}
+            </option>
+          ))};
         </select>
       </div>
       <div>
         <label
-          htmlFor="sub-kategori"
+          htmlFor="kategori"
           className="block text-sm font-semibold text-gray-700"
         >
           Sub Kategori
         </label>
         <select
-          id="sub-kategori"
+          id="kategori"
           name="subCategoryId"
           value={formData.subCategoryId}
           onChange={handleChange}
