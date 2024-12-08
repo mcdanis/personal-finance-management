@@ -69,14 +69,35 @@ export default class Validation {
       formData.subCategoryId,
       "Sub Kategori"
     );
-    const description = this.required(formData.description, "Keterangan");
     const value = this.isNumber(formData.value, "Nominal", 9);
+    const accountId = this.required2(formData.accountId, "Akun");
 
+    if (accountId) newErrors.accountId = accountId;
     if (subCategoryId) newErrors.subCategoryId = subCategoryId;
     if (categoryId) newErrors.categoryId = categoryId;
     if (name) newErrors.name = name;
     if (date) newErrors.date = date;
-    if (description) newErrors.description = description;
+    if (value) newErrors.value = value;
+
+    return this.validationCheckResult(newErrors);
+  }
+
+  static validateIncome(formData: any) {
+    const newErrors: Record<any, any> = {};
+
+    const name = this.required(formData.name, "Pengeluaran");
+    const date = this.required2(formData.date, "Tanggal Input");
+    const sourceOfIncome = this.required2(
+      formData.sourceOfIncome,
+      "Sumber income"
+    );
+    const value = this.isNumber(formData.value, "Nominal", 9);
+    const accountId = this.required2(formData.accountId, "Akun");
+
+    if (accountId) newErrors.accountId = accountId;
+    if (sourceOfIncome) newErrors.sourceOfIncome = sourceOfIncome;
+    if (name) newErrors.name = name;
+    if (date) newErrors.date = date;
     if (value) newErrors.value = value;
 
     return this.validationCheckResult(newErrors);

@@ -6,6 +6,7 @@ import ApiService from "@/services/ApiService";
 import Cookies from "js-cookie";
 import {
   ToastFailed,
+  formatCurrency,
   ToastSuccess,
   jsonToString,
 } from "@/components/SmallPart/SmallPart";
@@ -19,6 +20,14 @@ interface Expenditure {
   description: string;
   accountId: number;
   userId: number;
+}
+
+interface ExpenditureData {
+  name: string;
+  date: Date;
+  sub_category_name: number;
+  amount: number;
+  account_name: number;
 }
 
 interface Category {
@@ -40,29 +49,32 @@ interface Account {
 
 // const userPublic = Cookies.get("user");
 function UserPublic() {
-  return JSON.parse(Cookies.get("user"));
+  const user = Cookies.get("user");
+  return user ? JSON.parse(user) : null;
 }
+
 const apiService = new ApiService();
 
 export const ExpenditureTabContentData = () => {
-  const [expenditure, setExpenditure] = useState<Expenditure[]>([]);
+  const [expenditure, setExpenditure] = useState<ExpenditureData[]>([]);
+  const [error, setError] = useState<String>();
   const userPublic = UserPublic();
 
   const fetchExpenditure = async () => {
-    // if (!userPublic?.id) return alert();
+    if (!userPublic?.id) return;
 
     try {
       const response = await apiService.get(
         `expenditure/${userPublic.id}/today`
       );
       if (Array.isArray(response)) {
-        // setExpenditure(response);
+        setExpenditure(response);
       } else {
-        // setError("Expenditure tidak ditemukan dalam format yang benar.");
+        setError("Expenditure tidak ditemukan dalam format yang benar.");
       }
     } catch (error) {
       console.log(error);
-      // setError("Gagal mengambil data akun");
+      setError("Gagal mengambil data akun");
     }
   };
 
@@ -72,6 +84,17 @@ export const ExpenditureTabContentData = () => {
 
   return (
     <div className="overflow-x-auto">
+      {error && (
+        <div>
+          <div className="bg-red-100 border-l-4 border-red-500 p-4 mb-4 text-red-600">
+            <p
+              className="text-sm font-medium"
+              dangerouslySetInnerHTML={{ __html: error }}
+            ></p>
+          </div>
+        </div>
+      )}
+      <H3>Hari ini</H3>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
@@ -85,89 +108,51 @@ export const ExpenditureTabContentData = () => {
               Nominal
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Tanggal
+              Akun
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Sub Kategori
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          <tr>
-            <td className="px-6 py-4 whitespace-nowrap">1</td>
-            <td className="px-6 py-4 whitespace-nowrap">Alice</td>
-            <td className="px-6 py-4 whitespace-nowrap">alice@example.com</td>
-            <td className="px-6 py-4 whitespace-nowrap">Admin</td>
-            <td className="">
-              <Link href={`/transaction/edit-expenditure/8`}>
-                <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
-                  Edit
-                  <svg
-                    className="w-4 h-4 ml-1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16 4l4 4-8 8H8v-4l8-8z"
-                    />
-                  </svg>
-                </button>
-              </Link>
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 whitespace-nowrap">2</td>
-            <td className="px-6 py-4 whitespace-nowrap">Bob</td>
-            <td className="px-6 py-4 whitespace-nowrap">bob@example.com</td>
-            <td className="px-6 py-4 whitespace-nowrap">User</td>
-            <td className="">
-              <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
-                Edit
-                <svg
-                  className="w-4 h-4 ml-1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 4l4 4-8 8H8v-4l8-8z"
-                  />
-                </svg>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 whitespace-nowrap">3</td>
-            <td className="px-6 py-4 whitespace-nowrap">Charlie</td>
-            <td className="px-6 py-4 whitespace-nowrap">charlie@example.com</td>
-            <td className="px-6 py-4 whitespace-nowrap">User</td>
-            <td className="">
-              <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
-                Edit
-                <svg
-                  className="w-4 h-4 ml-1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 4l4 4-8 8H8v-4l8-8z"
-                  />
-                </svg>
-              </button>
-            </td>
-          </tr>
+          {expenditure.map((exp, index) => (
+            <tr>
+              <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{exp.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {formatCurrency(exp.amount)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {exp.account_name}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {exp.sub_category_name}
+              </td>
+              <td className="">
+                <Link href={`/transaction/edit-expenditure/8`}>
+                  <button className="inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
+                    Edit
+                    <svg
+                      className="w-4 h-4 ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 4l4 4-8 8H8v-4l8-8z"
+                      />
+                    </svg>
+                  </button>
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -175,7 +160,6 @@ export const ExpenditureTabContentData = () => {
 };
 
 export const ExpenditureTabContentInput = () => {
-  const [user, setUser] = useState(null);
   const [error, setError] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
@@ -184,7 +168,9 @@ export const ExpenditureTabContentInput = () => {
     SubCategory[]
   >([]);
 
-  const defaultExpenditureFormData = {
+  const userPublic = UserPublic();
+
+  const defaultExpenditureFormData: Expenditure = {
     name: "",
     date: new Date(),
     categoryId: 0,
@@ -200,18 +186,11 @@ export const ExpenditureTabContentInput = () => {
   );
 
   useEffect(() => {
-    const storedUser = Cookies.get("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
     fetchCategories();
     fetchAccounts();
     fetchSubCategory();
     // fetchExpenditure();
-  }, [user]);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -221,8 +200,8 @@ export const ExpenditureTabContentInput = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
-      userId: user.id,
+      [name]: name === "date" ? new Date(value) : value,
+      userId: userPublic.id,
     });
 
     if (name == "categoryId") {
@@ -253,10 +232,10 @@ export const ExpenditureTabContentInput = () => {
   };
 
   const fetchCategories = async () => {
-    if (!user?.id) return;
+    if (!userPublic?.id) return;
 
     try {
-      const response = await apiService.get(`categories/${user.id}`);
+      const response = await apiService.get(`categories/${userPublic.id}`);
       if (Array.isArray(response)) {
         setCategories(response);
       } else {
@@ -268,10 +247,10 @@ export const ExpenditureTabContentInput = () => {
   };
 
   const fetchSubCategory = async () => {
-    if (!user?.id) return;
+    if (!userPublic?.id) return;
 
     try {
-      const response = await apiService.get(`sub-categories/${user.id}`);
+      const response = await apiService.get(`sub-categories/${userPublic.id}`);
       if (Array.isArray(response)) {
         setSubCategories(response);
       } else {
@@ -283,10 +262,10 @@ export const ExpenditureTabContentInput = () => {
   };
 
   const fetchAccounts = async () => {
-    if (!user?.id) return;
+    if (!userPublic?.id) return;
 
     try {
-      const response = await apiService.get(`accounts/${user.id}`);
+      const response = await apiService.get(`accounts/${userPublic.id}`);
       if (Array.isArray(response)) {
         setAccounts(response);
       } else {
@@ -374,7 +353,6 @@ export const ExpenditureTabContentInput = () => {
                 {cat.name}
               </option>
             ))}
-            ;
           </select>
         </div>
         <div>

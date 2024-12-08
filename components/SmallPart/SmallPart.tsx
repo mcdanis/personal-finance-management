@@ -13,8 +13,11 @@ export const ToastSuccess = (msg = "Data berhasil disimpan!") => {
   });
 };
 
-export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("id-ID").format(value);
+export const formatCurrency = (
+  value: number,
+  currency: string = "Rp"
+): string => {
+  return currency + new Intl.NumberFormat("id-ID").format(value);
 };
 
 export const handleDelete = async (route: string, selectedName: string) => {

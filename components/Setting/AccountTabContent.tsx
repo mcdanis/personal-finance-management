@@ -253,7 +253,7 @@ const AccountTabContent = () => {
                 <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{account.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  Rp{formatCurrency(account.balance)}
+                  {formatCurrency(account.balance)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getTypeLabel(account.type)}
